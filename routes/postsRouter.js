@@ -1,11 +1,18 @@
 const express = require("express");
-const commentRouter = require("./commentRouter");
-const postsRouter = express.Router();
+const postsRouter = express.Router({ mergeParams: true });
+const middlewares = require("../middlewares");
+const postController = require("../controller/postController");
+
+postsRouter.post(
+  "/",
+  middlewares.isAuthenticated,
+  middlewares.isAuthorized,
+  postController.handleAddPost
+);
 
 postsRouter.get("/", (req, res) => {});
 postsRouter.get("/:postId", (req, res) => {});
 postsRouter.put("/:postId", (req, res) => {});
 postsRouter.delete("/:postId", (req, res) => {});
-postsRouter.use("/:postId/comments", commentRouter);
 
 module.exports = postsRouter;

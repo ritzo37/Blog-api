@@ -28,8 +28,10 @@ async function handleLogin(req, res) {
         message: "The password doesn't match",
       });
     } else {
+      const userId = user.id;
+      const userRole = user.role;
       jwt.sign(
-        { username: username },
+        { username, userId, userRole },
         process.env.SECRET_KEY,
         { algorithm: "HS256" },
         function (err, token) {

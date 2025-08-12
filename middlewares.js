@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-function isAuth(req, res, next) {
+function isAuthenticated(req, res, next) {
   const authorizationHeader = req.headers.authorization;
   const authorizationHeaderVal = authorizationHeader.split(" ");
   const tokenVal = authorizationHeaderVal[1];
@@ -15,12 +15,27 @@ function isAuth(req, res, next) {
           message: "Please login !",
         });
       } else {
+        const { userId, role } = decoded;
+        res.locals.userId = userId;
+        res.locals.role = role;
         next();
       }
     });
   }
 }
 
+function isAuthorized(req, res, next) {
+  const { userId, role } = res.locals;
+  if (role == "user") {
+    res.status(403).json({
+      message: "You cannot do this sorry !",
+    });
+  } else {
+    next();
+  }
+}
+
 module.exports = {
-  isAuth,
+  isAuthenticated,
+  isAuthorized,
 };

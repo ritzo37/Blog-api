@@ -20,7 +20,29 @@ async function getUser(username) {
   return user;
 }
 
+async function addPost(content, title, authorId) {
+  await prisma.post.create({
+    data: {
+      content,
+      title,
+      authorId,
+    },
+  });
+}
+
+async function addComment(postId, userId, content) {
+  await prisma.comments.create({
+    data: {
+      content,
+      postId,
+      userId,
+    },
+  });
+}
+
 module.exports = {
   addUser,
   getUser,
+  addPost,
+  addComment,
 };
