@@ -7,12 +7,23 @@ postsRouter.post(
   "/",
   middlewares.isAuthenticated,
   middlewares.isAuthorized,
-  postController.handleAddPost
+  postController.addPost
 );
 
-postsRouter.get("/", (req, res) => {});
-postsRouter.get("/:postId", (req, res) => {});
-postsRouter.put("/:postId", (req, res) => {});
-postsRouter.delete("/:postId", (req, res) => {});
+postsRouter.get("/", postController.getPosts);
+postsRouter.get("/:postId", postController.getPost);
+postsRouter.delete(
+  "/:postId",
+  middlewares.isAuthenticated,
+  middlewares.isAuthorized,
+  postController.deletePost
+);
+
+postsRouter.put(
+  "/:postId",
+  middlewares.isAuthenticated,
+  middlewares.isAuthorized,
+  postController.updatePost
+);
 
 module.exports = postsRouter;

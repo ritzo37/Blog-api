@@ -11,12 +11,58 @@ async function addComment(req, res) {
       message: "Comment posted!",
     });
   } catch (err) {
-    console.log(err);
     res.status(500).json({
       message: "Something bad happened please try again !",
     });
   }
 }
+
+async function deleteComment(req, res) {
+  const commentId = parseInt(req.params.commentId);
+  try {
+    await db.deleteComment(commentId);
+    res.status(200).json({
+      message: "Sucessfully deleted the comment!",
+    });
+  } catch {
+    res.status(500).json({
+      message: "Something bad happened please try again !",
+    });
+  }
+}
+
+async function upvoteComment(req, res) {
+  const commentId = parseInt(req.params.commentId);
+  try {
+    await db.upvoteComment(commentId);
+    res.json({
+      message: "Upvoted!",
+    });
+  } catch (err) {
+    console.log(err);
+    res
+      .status(500)
+      .json({ message: "Something bad happened please try again!" });
+  }
+}
+
+async function downvoteComment(req, res) {
+  const commentId = parseInt(req.params.commentId);
+  try {
+    await db.downvoteComment(commentId);
+    res.json({
+      message: "Downvoted!",
+    });
+  } catch {
+    res
+      .status(500)
+      .json({ message: "Something bad happened please try again!" });
+  }
+}
+
 module.exports = {
   addComment,
+  deleteComment,
+  upvoteComment,
+  downvoteComment,
 };

@@ -8,5 +8,7 @@ commentRouter.post(
   commentController.addComment
 );
 
-commentRouter.get("/:commentId", (req, res) => {});
+commentRouter.delete("/:commentId", commentController.deleteComment);
+commentRouter.put("/:commentId/upvote", commentController.upvoteComment);
+commentRouter.put("/:commentId/downvote", commentController.downvoteComment);
 module.exports = commentRouter;
