@@ -33,10 +33,9 @@ async function deleteComment(req, res) {
 async function upvoteComment(req, res) {
   const commentId = parseInt(req.params.commentId);
   const userId = res.locals.userId;
-
   try {
     const data = await db.checkUpvote(commentId, userId);
-    if (data) {
+    if (data.length) {
       return res
         .status(409)
         .json({ message: "You have already upvoted this comment!" });
@@ -58,7 +57,7 @@ async function downvoteComment(req, res) {
   const userId = res.locals.userId;
   try {
     const data = await db.checkDownvote(commentId, userId);
-    if (data) {
+    if (data.length) {
       return res
         .status(409)
         .json({ message: "You have already downvoted this comment!" });
