@@ -9,6 +9,14 @@ commentRouter.post(
 );
 
 commentRouter.delete("/:commentId", commentController.deleteComment);
-commentRouter.put("/:commentId/upvote", commentController.upvoteComment);
-commentRouter.put("/:commentId/downvote", commentController.downvoteComment);
+commentRouter.post(
+  "/:commentId/upvote",
+  middlewares.isAuthenticated,
+  commentController.upvoteComment
+);
+commentRouter.post(
+  "/:commentId/downvote",
+  middlewares.isAuthenticated,
+  commentController.downvoteComment
+);
 module.exports = commentRouter;

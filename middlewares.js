@@ -2,6 +2,11 @@ const jwt = require("jsonwebtoken");
 
 function isAuthenticated(req, res, next) {
   const authorizationHeader = req.headers.authorization;
+  if (!authorizationHeader) {
+    return res.status(401).json({
+      message: "You need to be authenticated to do this job!",
+    });
+  }
   const authorizationHeaderVal = authorizationHeader.split(" ");
   const tokenVal = authorizationHeaderVal[1];
   if (!tokenVal) {

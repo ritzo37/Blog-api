@@ -4,15 +4,20 @@ const homeRouter = express.Router();
 const homeController = require("../controller/homeController");
 const middlewares = require("../middlewares");
 const commentRouter = require("./commentRouter");
+const validator = require("../errorValidation");
 
 homeRouter.get("/", (req, res) => {
   res.json("Welcome to the app !");
 });
 
 homeRouter.use("/posts", postsRouter);
-homeRouter.post("/sign-up", homeController.handleSignUp);
+homeRouter.post("/sign-up", ...validator, homeController.handleSignUp);
 homeRouter.post("/log-in", homeController.handleLogin);
-homeRouter.use("/posts/:postId/comments", commentRouter);
+homeRouter.use(
+  "/posts/:postId/comments",
+  middlewares.isAuthenticated,
+  commentRouter
+);
 homeRouter.get("/auth-route", middlewares.isAuthenticated, (req, res) => {
   res.status(200).json("Authenication Works!");
 });

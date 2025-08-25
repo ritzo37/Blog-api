@@ -4,10 +4,9 @@ async function addComment(req, res) {
   const userId = res.locals.userId;
   const postId = parseInt(req.params.postId);
   const { content } = req.body;
-  console.log(postId);
   try {
     await db.addComment(postId, userId, content);
-    res.status(200).json({
+    return res.status(200).json({
       message: "Comment posted!",
     });
   } catch (err) {
@@ -33,8 +32,16 @@ async function deleteComment(req, res) {
 
 async function upvoteComment(req, res) {
   const commentId = parseInt(req.params.commentId);
+  const userId = res.locals.userId;
+
   try {
-    await db.upvoteComment(commentId);
+    const data = await db.checkUpvote(commentId, userId);
+    if (data) {
+      return res
+        .status(409)
+        .json({ message: "You have already upvoted this comment!" });
+    }
+    await db.upvoteComment(commentId, userId);
     res.json({
       message: "Upvoted!",
     });
@@ -48,8 +55,15 @@ async function upvoteComment(req, res) {
 
 async function downvoteComment(req, res) {
   const commentId = parseInt(req.params.commentId);
+  const userId = res.locals.userId;
   try {
-    await db.downvoteComment(commentId);
+    const data = await db.checkDownvote(commentId, userId);
+    if (data) {
+      return res
+        .status(409)
+        .json({ message: "You have already downvoted this comment!" });
+    }
+    await db.downvoteComment(commentId, userId);
     res.json({
       message: "Downvoted!",
     });

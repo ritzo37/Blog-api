@@ -15,11 +15,6 @@ async function addPost(req, res) {
   }
 }
 
-async function editPost(req, res) {
-  const { content } = req.body;
-  const userId = res.locals.userId;
-}
-
 async function getPosts(req, res) {
   try {
     const data = await db.getPosts();
@@ -75,7 +70,6 @@ async function updatePost(req, res) {
 
 module.exports = {
   addPost,
-  editPost,
   getPosts,
   deletePost,
   getPost,

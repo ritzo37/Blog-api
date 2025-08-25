@@ -40,6 +40,24 @@ async function addComment(postId, userId, content) {
   });
 }
 
+async function checkUpvote(commentId, userId) {
+  const data = await prisma.upvotes.findMany({
+    where: {
+      AND: [{ cid: commentId }, { userId: userId }],
+    },
+  });
+  return data;
+}
+
+async function checkDownvote(commentId, userId) {
+  const data = await prisma.downvotes.findMany({
+    where: {
+      AND: [{ cid: commentId }, { userId: userId }],
+    },
+  });
+  return data;
+}
+
 async function deleteComment(commentId) {
   await prisma.comments.delete({
     where: {
@@ -52,7 +70,13 @@ async function getPosts() {
   const data = await prisma.post.findMany({
     include: {
       author: true,
-      comments: true,
+      comments: {
+        include: {
+          user: true,
+          upvotes: true,
+          downvotes: true,
+        },
+      },
     },
   });
   return data;
@@ -87,28 +111,20 @@ async function updatePost(postId, content, title) {
   });
 }
 
-async function upvoteComment(commentId) {
-  await prisma.comments.update({
-    where: {
-      cid: commentId,
-    },
+async function upvoteComment(commentId, userId) {
+  await prisma.upvotes.create({
     data: {
-      upvotes: {
-        increment: 1,
-      },
+      cid: commentId,
+      userId: userId,
     },
   });
 }
 
-async function downvoteComment(commentId) {
-  await prisma.comments.update({
-    where: {
-      cid: commentId,
-    },
+async function downvoteComment(commentId, userId) {
+  await prisma.downvotes.create({
     data: {
-      downvotes: {
-        decrement: 1,
-      },
+      cid: commentId,
+      userId: userId,
     },
   });
 }
@@ -124,4 +140,6 @@ module.exports = {
   updatePost,
   upvoteComment,
   downvoteComment,
+  checkUpvote,
+  checkDownvote,
 };

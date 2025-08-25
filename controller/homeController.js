@@ -1,6 +1,14 @@
 const db = require("../prismaQuery");
 const jwt = require("jsonwebtoken");
+const { validationResult } = require("express-validator");
+
 async function handleSignUp(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array(),
+    });
+  }
   const { username, password } = req.body;
   try {
     await db.addUser(username, password);
