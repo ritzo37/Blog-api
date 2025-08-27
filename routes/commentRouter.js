@@ -21,4 +21,13 @@ commentRouter.post(
   middlewares.isAuthenticated,
   commentController.downvoteComment
 );
+
+commentRouter.post(
+  "/:commentId/reply",
+  middlewares.isAuthenticated,
+  commentController.addReply
+);
+
+commentRouter.get("/:commentId/replies", commentController.getReplies);
+
 module.exports = commentRouter;

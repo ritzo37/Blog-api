@@ -137,8 +137,28 @@ async function getComments(postId) {
     include: {
       upvotes: true,
       downvotes: true,
+      replies: true,
     },
   });
+}
+
+async function addReply(cid, content, userId) {
+  await prisma.replies.create({
+    data: {
+      userId,
+      content,
+      cid,
+    },
+  });
+}
+
+async function getReplies(cid) {
+  const data = await prisma.replies.findMany({
+    where: {
+      cid,
+    },
+  });
+  return data;
 }
 
 module.exports = {
@@ -156,4 +176,6 @@ module.exports = {
   checkUpvote,
   checkDownvote,
   getComments,
+  addReply,
+  getReplies,
 };

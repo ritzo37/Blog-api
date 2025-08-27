@@ -77,10 +77,39 @@ async function getComments(req, res) {
   try {
     const data = await db.getComments();
     res.json(data);
-  } catch {
+  } catch (err) {
+    console.log(err);
     res
       .status(500)
       .json({ message: "Something bad happened please try again!" });
+  }
+}
+
+async function addReply(req, res) {
+  try {
+    const commentId = parseInt(req.params.commentId);
+    const userId = res.locals.userId;
+    const content = req.body.content;
+    await db.addReply(commentId, content, userId);
+    res.json({ message: "You have sucessfully added your comment!" });
+  } catch (err) {
+    console.log(err);
+    res
+      .status(500)
+      .json({ message: "Something bad happened please try agian!" });
+  }
+}
+
+async function getReplies(req, res) {
+  try {
+    const commentId = parseInt(req.params.commentId);
+    const data = await db.getReplies(commentId);
+    res.json(data);
+  } catch (err) {
+    console.log(err);
+    res
+      .status(500)
+      .json({ message: "Something bad happened please try agian!" });
   }
 }
 
@@ -90,4 +119,6 @@ module.exports = {
   upvoteComment,
   downvoteComment,
   getComments,
+  addReply,
+  getReplies,
 };

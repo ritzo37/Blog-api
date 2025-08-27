@@ -38,7 +38,17 @@ model Comments {
    upvotes Upvotes[]
    downvotes Downvotes[]
    user User @relation(fields: [userId] ,references: [id])
+   replies Replies[] 
    userId Int 
+}
+
+model Replies {
+    id Int @id @default(autoincrement())
+    content String
+    createdAt DateTime @default(now())
+    userId Int 
+    cid Int 
+    comment Comments @relation(fields: [cid] , references: [cid] , onDelete: Cascade)
 }
 
 model Upvotes {
