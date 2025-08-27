@@ -1,6 +1,7 @@
 const express = require("express");
 const commentRouter = express.Router({ mergeParams: true });
 const commentController = require("../controller/commentsController");
+
 const middlewares = require("../middlewares.js");
 commentRouter.post(
   "/",
@@ -8,6 +9,7 @@ commentRouter.post(
   commentController.addComment
 );
 
+commentRouter.get("/", commentController.getComments);
 commentRouter.delete("/:commentId", commentController.deleteComment);
 commentRouter.post(
   "/:commentId/upvote",

@@ -73,9 +73,21 @@ async function downvoteComment(req, res) {
   }
 }
 
+async function getComments(req, res) {
+  try {
+    const data = await db.getComments();
+    res.json(data);
+  } catch {
+    res
+      .status(500)
+      .json({ message: "Something bad happened please try again!" });
+  }
+}
+
 module.exports = {
   addComment,
   deleteComment,
   upvoteComment,
   downvoteComment,
+  getComments,
 };

@@ -128,6 +128,19 @@ async function downvoteComment(commentId, userId) {
     },
   });
 }
+
+async function getComments(postId) {
+  return await prisma.comments.findMany({
+    where: {
+      postId: postId,
+    },
+    include: {
+      upvotes: true,
+      downvotes: true,
+    },
+  });
+}
+
 module.exports = {
   addUser,
   getUser,
@@ -142,4 +155,5 @@ module.exports = {
   downvoteComment,
   checkUpvote,
   checkDownvote,
+  getComments,
 };
