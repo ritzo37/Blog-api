@@ -70,13 +70,6 @@ async function getPosts() {
   const data = await prisma.post.findMany({
     include: {
       author: true,
-      comments: {
-        include: {
-          user: true,
-          upvotes: true,
-          downvotes: true,
-        },
-      },
     },
   });
   return data;
@@ -91,12 +84,27 @@ async function deletePost(postId) {
 }
 
 async function getPost(postId) {
-  const post = await prisma.post.findUnique({
+  const data = await prisma.post.findUnique({
     where: {
-      postId,
+      postId: postId,
+    },
+    include: {
+      author: true,
+      comments: {
+        include: {
+          user: true,
+          upvotes: true,
+          downvotes: true,
+          replies: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      },
     },
   });
-  return post;
+  return data;
 }
 
 async function updatePost(postId, content, title) {
