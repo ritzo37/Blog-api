@@ -1,6 +1,7 @@
 const db = require("../prismaQuery");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
+const bcrypt = require("bcrypt");
 
 async function handleSignUp(req, res) {
   const errors = validationResult(req);
@@ -10,8 +11,9 @@ async function handleSignUp(req, res) {
     });
   }
   const { username, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
   try {
-    await db.addUser(username, password);
+    await db.addUser(username, hashedPassword);
     res.status(200).json({
       message: "Sucessfully Created The User",
     });
@@ -31,7 +33,8 @@ async function handleLogin(req, res) {
     });
   } else {
     const fetchedPassword = user.password;
-    if (fetchedPassword != password) {
+    const match = await bcrypt.compare(password, fetchedPassword);
+    if (!match) {
       res.status(401).json({
         message: "The password doesn't match",
       });
