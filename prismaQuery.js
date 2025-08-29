@@ -66,6 +66,14 @@ async function deleteComment(commentId) {
   });
 }
 
+async function deleteReply(replyId) {
+  await prisma.replies.delete({
+    where: {
+      id: replyId,
+    },
+  });
+}
+
 async function getPosts() {
   const data = await prisma.post.findMany({
     include: {
@@ -221,4 +229,5 @@ module.exports = {
   getReplies,
   getPostsByAuthorId,
   getPostWithAuthorIdAndPostId,
+  deleteReply,
 };

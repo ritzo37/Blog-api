@@ -112,6 +112,20 @@ async function getReplies(req, res) {
   }
 }
 
+async function deleteReply(req, res) {
+  const replyId = parseInt(req.params.replyId);
+  try {
+    await db.deleteReply(replyId);
+    res.status(200).json({
+      message: "Sucessfully deleted the reply!",
+    });
+  } catch {
+    res.status(500).json({
+      message: "Something bad happened please try again !",
+    });
+  }
+}
+
 module.exports = {
   addComment,
   deleteComment,
@@ -119,5 +133,6 @@ module.exports = {
   downvoteComment,
   getComments,
   addReply,
+  deleteReply,
   getReplies,
 };

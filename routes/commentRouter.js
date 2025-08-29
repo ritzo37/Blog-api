@@ -34,6 +34,12 @@ commentRouter.post(
   commentController.addReply
 );
 
-commentRouter.get("/:commentId/replies", commentController.getReplies);
+commentRouter.delete(
+  "/:commentId/reply/:replyId",
+  middlewares.isAuthenticated,
+  middlewares.isAuthorized,
+  middlewares.postAuthorCheck,
+  commentController.deleteReply
+);
 
 module.exports = commentRouter;
