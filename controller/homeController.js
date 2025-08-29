@@ -42,7 +42,7 @@ async function handleLogin(req, res) {
       const userId = user.id;
       const userRole = user.role;
       jwt.sign(
-        { username, userId, userRole },
+        { userId, userRole },
         process.env.SECRET_KEY,
         { algorithm: "HS256" },
         function (err, token) {

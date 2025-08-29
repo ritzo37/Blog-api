@@ -107,6 +107,30 @@ async function getPost(postId) {
   return data;
 }
 
+async function getPostsByAuthorId(authorId) {
+  const data = await prisma.post.findMany({
+    where: {
+      authorId,
+    },
+    include: {
+      author: true,
+      comments: {
+        include: {
+          user: true,
+          upvotes: true,
+          downvotes: true,
+          replies: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  return data;
+}
+
 async function updatePost(postId, content, title) {
   await prisma.post.update({
     where: {
@@ -169,6 +193,15 @@ async function getReplies(cid) {
   return data;
 }
 
+async function getPostWithAuthorIdAndPostId(authorId, postId) {
+  const data = await prisma.post.findUnique({
+    where: {
+      authorId,
+      postId,
+    },
+  });
+  return data;
+}
 module.exports = {
   addUser,
   getUser,
@@ -186,4 +219,6 @@ module.exports = {
   getComments,
   addReply,
   getReplies,
+  getPostsByAuthorId,
+  getPostWithAuthorIdAndPostId,
 };

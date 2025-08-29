@@ -68,10 +68,23 @@ async function updatePost(req, res) {
   }
 }
 
+async function getAuthorPosts(req, res) {
+  const authorId = res.locals.userId;
+  try {
+    const data = await db.getPostsByAuthorId(authorId);
+    res.json(data);
+  } catch {
+    res.status(500).json({
+      message: "Something bad happened please try again !",
+    });
+  }
+}
+
 module.exports = {
   addPost,
   getPosts,
   deletePost,
   getPost,
   updatePost,
+  getAuthorPosts,
 };

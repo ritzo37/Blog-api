@@ -3,14 +3,13 @@ const postsRouter = express.Router({ mergeParams: true });
 const middlewares = require("../middlewares");
 const postController = require("../controller/postController");
 
-postsRouter.post(
+postsRouter.get(
   "/",
   middlewares.isAuthenticated,
   middlewares.isAuthorized,
-  postController.addPost
+  postController.getPosts
 );
 
-postsRouter.get("/", postController.getPosts);
 postsRouter.get("/:postId", postController.getPost);
 postsRouter.delete(
   "/:postId",

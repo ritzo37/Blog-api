@@ -1,5 +1,4 @@
 const db = require("../prismaQuery");
-
 async function addComment(req, res) {
   const userId = res.locals.userId;
   const postId = parseInt(req.params.postId);

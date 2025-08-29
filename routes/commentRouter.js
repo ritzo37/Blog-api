@@ -9,8 +9,14 @@ commentRouter.post(
   commentController.addComment
 );
 
-commentRouter.get("/", commentController.getComments);
-commentRouter.delete("/:commentId", commentController.deleteComment);
+commentRouter.delete(
+  "/:commentId",
+  middlewares.isAuthenticated,
+  middlewares.isAuthorized,
+  middlewares.postAuthorCheck,
+  commentController.deleteComment
+);
+
 commentRouter.post(
   "/:commentId/upvote",
   middlewares.isAuthenticated,

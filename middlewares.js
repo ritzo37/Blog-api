@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-
+const db = require("./prismaQuery");
 function isAuthenticated(req, res, next) {
   const authorizationHeader = req.headers.authorization;
   if (!authorizationHeader) {
@@ -20,9 +20,9 @@ function isAuthenticated(req, res, next) {
           message: "Please login !",
         });
       } else {
-        const { userId, role } = decoded;
+        const { userId, userRole } = decoded;
         res.locals.userId = userId;
-        res.locals.role = role;
+        res.locals.role = userRole;
         next();
       }
     });
@@ -40,7 +40,27 @@ function isAuthorized(req, res, next) {
   }
 }
 
+async function postAuthorCheck(req, res, next) {
+  const { userId } = res.locals;
+  const postId = parseInt(req.params.postId);
+  try {
+    const data = await db.getPostWithAuthorIdAndPostId(userId, postId);
+    if (!data) {
+      res.status(403).json({
+        message: "You cannot do this sorry !",
+      });
+    } else {
+      next();
+    }
+  } catch {
+    res.status(500).json({
+      message: "Something bad happened please try again!",
+    });
+  }
+}
+
 module.exports = {
   isAuthenticated,
   isAuthorized,
+  postAuthorCheck,
 };
