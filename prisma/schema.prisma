@@ -9,60 +9,60 @@ datasource db {
 }
 
 model User {
-   id Int @id @default(autoincrement())
-   name String @unique
-   password String 
-   role String @default("user")
-   posts Post[]
-   comments Comments[]
-   replies Replies[]
+  id       Int        @id @default(autoincrement())
+  name     String     @unique
+  password String
+  role     String     @default("user")
+  comments Comments[]
+  posts    Post[]
+  replies  Replies[]
 }
 
 model Post {
-   postId Int @id @default(autoincrement())
-   content String
-   title String 
-   author User @relation (fields: [authorId] , references: [id])
-   authorId Int
-   published Boolean  @default(false)
-   createdAt DateTime @default(now())
-   updatedAt DateTime @default(now())
-   comments Comments[]
+  postId    Int        @id @default(autoincrement())
+  content   String
+  title     String
+  authorId  Int
+  published Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
+  comments  Comments[]
+  author    User       @relation(fields: [authorId], references: [id])
 }
 
 model Comments {
-   cid Int @id @default(autoincrement())
-   content String
-   post Post @relation (fields: [postId] , references: [postId], onDelete: Cascade)
-   postId Int 
-   createdAt DateTime @default(now())
-   upvotes Upvotes[]
-   downvotes Downvotes[]
-   user User @relation(fields: [userId] ,references: [id])
-   replies Replies[] 
-   userId Int 
+  cid       Int         @id @default(autoincrement())
+  content   String
+  postId    Int
+  createdAt DateTime    @default(now())
+  userId    Int
+  post      Post        @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id])
+  downvotes Downvotes[]
+  replies   Replies[]
+  upvotes   Upvotes[]
 }
 
 model Replies {
-    id Int @id @default(autoincrement())
-    content String
-    createdAt DateTime @default(now())
-    userId Int 
-    user User @relation(fields: [userId],references: [id])
-    cid Int 
-    comment Comments @relation(fields: [cid] , references: [cid] , onDelete: Cascade)
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  userId    Int
+  cid       Int
+  comment   Comments @relation(fields: [cid], references: [cid], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Upvotes {
-    id Int @id @default(autoincrement())
-    userId Int
-    comment Comments @relation (fields: [cid], references: [cid] , onDelete: Cascade) 
-    cid Int 
+  id      Int      @id @default(autoincrement())
+  userId  Int
+  cid     Int
+  comment Comments @relation(fields: [cid], references: [cid], onDelete: Cascade)
 }
 
 model Downvotes {
-    id Int @id @default(autoincrement())
-    userId Int
-    comment Comments @relation (fields: [cid], references: [cid] , onDelete: Cascade) 
-    cid Int 
+  id      Int      @id @default(autoincrement())
+  userId  Int
+  cid     Int
+  comment Comments @relation(fields: [cid], references: [cid], onDelete: Cascade)
 }
