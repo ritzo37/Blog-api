@@ -39,7 +39,7 @@ commentRouter.delete(
   middlewares.isAuthenticated,
   middlewares.isAuthorized,
   middlewares.postAuthorCheck,
-  commentController.deleteReply
+  commentController.deleteComment
 );
 
 module.exports = commentRouter;

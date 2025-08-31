@@ -87,42 +87,16 @@ async function getComments(req, res) {
 async function addReply(req, res) {
   try {
     const commentId = parseInt(req.params.commentId);
+    const postId = parseInt(req.params.postId);
     const userId = res.locals.userId;
     const content = req.body.content;
-    await db.addReply(commentId, content, userId);
+    await db.addReply(commentId, content, userId, postId);
     res.json({ message: "You have sucessfully added your comment!" });
   } catch (err) {
     console.log(err);
     res
       .status(500)
       .json({ message: "Something bad happened please try agian!" });
-  }
-}
-
-async function getReplies(req, res) {
-  try {
-    const commentId = parseInt(req.params.commentId);
-    const data = await db.getReplies(commentId);
-    res.json(data);
-  } catch (err) {
-    console.log(err);
-    res
-      .status(500)
-      .json({ message: "Something bad happened please try agian!" });
-  }
-}
-
-async function deleteReply(req, res) {
-  const replyId = parseInt(req.params.replyId);
-  try {
-    await db.deleteReply(replyId);
-    res.status(200).json({
-      message: "Sucessfully deleted the reply!",
-    });
-  } catch {
-    res.status(500).json({
-      message: "Something bad happened please try again !",
-    });
   }
 }
 
@@ -133,6 +107,4 @@ module.exports = {
   downvoteComment,
   getComments,
   addReply,
-  deleteReply,
-  getReplies,
 };

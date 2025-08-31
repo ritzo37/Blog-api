@@ -66,14 +66,6 @@ async function deleteComment(commentId) {
   });
 }
 
-async function deleteReply(replyId) {
-  await prisma.replies.delete({
-    where: {
-      id: replyId,
-    },
-  });
-}
-
 async function getPosts() {
   const data = await prisma.post.findMany({
     include: {
@@ -106,8 +98,14 @@ async function getPost(postId) {
           replies: {
             include: {
               user: true,
+              upvotes: true,
+              downvotes: true,
+              replies: true,
             },
           },
+        },
+        where: {
+          parentCid: null,
         },
       },
     },
@@ -182,23 +180,15 @@ async function getComments(postId) {
   });
 }
 
-async function addReply(cid, content, userId) {
-  await prisma.replies.create({
+async function addReply(cid, content, userId, postId) {
+  await prisma.comments.create({
     data: {
       userId,
       content,
-      cid,
+      parentCid: cid,
+      postId,
     },
   });
-}
-
-async function getReplies(cid) {
-  const data = await prisma.replies.findMany({
-    where: {
-      cid,
-    },
-  });
-  return data;
 }
 
 async function getPostWithAuthorIdAndPostId(authorId, postId) {
@@ -210,6 +200,7 @@ async function getPostWithAuthorIdAndPostId(authorId, postId) {
   });
   return data;
 }
+
 module.exports = {
   addUser,
   getUser,
@@ -226,8 +217,6 @@ module.exports = {
   checkDownvote,
   getComments,
   addReply,
-  getReplies,
   getPostsByAuthorId,
   getPostWithAuthorIdAndPostId,
-  deleteReply,
 };

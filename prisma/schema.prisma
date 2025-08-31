@@ -15,7 +15,6 @@ model User {
   role     String     @default("user")
   comments Comments[]
   posts    Post[]
-  replies  Replies[]
 }
 
 model Post {
@@ -39,18 +38,10 @@ model Comments {
   post      Post        @relation(fields: [postId], references: [postId], onDelete: Cascade)
   user      User        @relation(fields: [userId], references: [id])
   downvotes Downvotes[]
-  replies   Replies[]
   upvotes   Upvotes[]
-}
-
-model Replies {
-  id        Int      @id @default(autoincrement())
-  content   String
-  createdAt DateTime @default(now())
-  userId    Int
-  cid       Int
-  comment   Comments @relation(fields: [cid], references: [cid], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id])
+  parentCid Int?
+  parent   Comments? @relation("ReplyRelation", fields: [parentCid] , references: [cid] , onDelete: Cascade)
+  replies  Comments[] @relation("ReplyRelation")
 }
 
 model Upvotes {
