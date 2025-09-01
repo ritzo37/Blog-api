@@ -109,18 +109,6 @@ async function getPostsByAuthorId(authorId) {
     },
     include: {
       author: true,
-      comments: {
-        include: {
-          user: true,
-          upvotes: true,
-          downvotes: true,
-          replies: {
-            include: {
-              user: true,
-            },
-          },
-        },
-      },
     },
   });
   return data;
