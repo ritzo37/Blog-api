@@ -93,11 +93,20 @@ async function helper(comments) {
 }
 
 async function getComments(req, res) {
-  const postId = parseInt(req.params.postId);
   try {
+    const postId = parseInt(req.params.postId);
+    const pageNumber = parseInt(req.params.pageNumber);
     const data = await db.getComments(postId);
+    const numberOfComments = data.length;
+    let maxPageNumber = Math.ceil(numberOfComments / 5);
+    if (pageNumber > maxPageNumber) {
+      return res.status(404).json({ message: "Not found!" });
+    }
     const newData = await helper(data);
-    res.json(newData);
+    let startingIndex = (pageNumber - 1) * 5;
+    let endingIndex = startingIndex + 5;
+    let dataToSend = newData.slice(startingIndex, endingIndex);
+    res.json(dataToSend);
   } catch (err) {
     console.log(err);
     res
@@ -121,7 +130,17 @@ async function addReply(req, res) {
       .json({ message: "Something bad happened please try agian!" });
   }
 }
-
+async function getTotal(req, res) {
+  const postId = parseInt(req.params.postId);
+  try {
+    const data = await db.getComments(postId);
+    res.json(data.length);
+  } catch {
+    res
+      .status(500)
+      .json({ message: "Something bad happened please try agian!" });
+  }
+}
 module.exports = {
   addComment,
   deleteComment,
@@ -129,4 +148,5 @@ module.exports = {
   downvoteComment,
   getComments,
   addReply,
+  getTotal,
 };

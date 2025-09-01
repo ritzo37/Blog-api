@@ -4,7 +4,8 @@ const commentController = require("../controller/commentsController");
 
 const middlewares = require("../middlewares.js");
 
-commentRouter.get("/", commentController.getComments);
+commentRouter.get("/total", commentController.getTotal);
+commentRouter.get("/:pageNumber", commentController.getComments);
 commentRouter.post(
   "/",
   middlewares.isAuthenticated,
