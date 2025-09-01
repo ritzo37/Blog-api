@@ -15,11 +15,7 @@ homeRouter.use("/author/posts", authorPostsRouter);
 homeRouter.use("/posts", postsRouter);
 homeRouter.post("/sign-up", ...validator, homeController.handleSignUp);
 homeRouter.post("/log-in", homeController.handleLogin);
-homeRouter.use(
-  "/posts/:postId/comments",
-  middlewares.isAuthenticated,
-  commentRouter
-);
+homeRouter.use("/posts/:postId/comments", commentRouter);
 homeRouter.get("/auth-route", middlewares.isAuthenticated, (req, res) => {
   res.status(200).json("Authenication Works!");
 });

@@ -72,15 +72,37 @@ async function downvoteComment(req, res) {
   }
 }
 
+async function helper(comments) {
+  if (!comments.length) return [];
+  const newArr = await Promise.all(
+    comments.map(async (currComment) => {
+      let replies = await db.getReplies(currComment.cid);
+      let upvotes = await db.getUpvotes(currComment.cid);
+      let downvotes = await db.getDownvotes(currComment.cid);
+      replies = await helper(replies);
+      currComment = {
+        ...currComment,
+        replies,
+        upvotes,
+        downvotes,
+      };
+      return currComment;
+    })
+  );
+  return newArr;
+}
+
 async function getComments(req, res) {
+  const postId = parseInt(req.params.postId);
   try {
-    const data = await db.getComments();
-    res.json(data);
+    const data = await db.getComments(postId);
+    const newData = await helper(data);
+    res.json(newData);
   } catch (err) {
     console.log(err);
     res
       .status(500)
-      .json({ message: "Something bad happened please try again!" });
+      .json({ message: "Something bad happened please try agian!" });
   }
 }
 

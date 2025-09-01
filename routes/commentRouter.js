@@ -3,6 +3,8 @@ const commentRouter = express.Router({ mergeParams: true });
 const commentController = require("../controller/commentsController");
 
 const middlewares = require("../middlewares.js");
+
+commentRouter.get("/", commentController.getComments);
 commentRouter.post(
   "/",
   middlewares.isAuthenticated,

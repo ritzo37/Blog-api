@@ -92,20 +92,9 @@ async function getPost(postId) {
       author: true,
       comments: {
         include: {
-          user: true,
-          upvotes: true,
           downvotes: true,
-          replies: {
-            include: {
-              user: true,
-              upvotes: true,
-              downvotes: true,
-              replies: true,
-            },
-          },
-        },
-        where: {
-          parentCid: null,
+          upvotes: true,
+          replies: true,
         },
       },
     },
@@ -171,11 +160,20 @@ async function getComments(postId) {
   return await prisma.comments.findMany({
     where: {
       postId: postId,
+      parentCid: null,
     },
     include: {
-      upvotes: true,
-      downvotes: true,
-      replies: true,
+      user: true,
+    },
+  });
+}
+async function getReplies(commentId) {
+  return await prisma.comments.findMany({
+    where: {
+      parentCid: commentId,
+    },
+    include: {
+      user: true,
     },
   });
 }
@@ -200,7 +198,28 @@ async function getPostWithAuthorIdAndPostId(authorId, postId) {
   });
   return data;
 }
+async function getUpvotes(cid) {
+  return await prisma.upvotes.findMany({
+    where: {
+      cid,
+    },
+  });
+}
+async function getDownvotes(cid) {
+  return await prisma.downvotes.findMany({
+    where: {
+      cid,
+    },
+  });
+}
 
+async function getUserWithUserId(userId) {
+  return await prisma.users.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+}
 module.exports = {
   addUser,
   getUser,
@@ -219,4 +238,8 @@ module.exports = {
   addReply,
   getPostsByAuthorId,
   getPostWithAuthorIdAndPostId,
+  getReplies,
+  getUpvotes,
+  getDownvotes,
+  getUserWithUserId,
 };
