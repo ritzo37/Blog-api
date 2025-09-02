@@ -10,12 +10,20 @@ authorPostsRouter.get(
   postController.getAuthorPosts
 );
 
+authorPostsRouter.put(
+  "/:postId/publishToggle",
+  middlewares.isAuthenticated,
+  middlewares.isAuthorized,
+  middlewares.postAuthorCheck,
+  postController.publishHandler
+);
+
 authorPostsRouter.get(
   "/:postId",
   middlewares.isAuthenticated,
   middlewares.isAuthorized,
   middlewares.postAuthorCheck,
-  postController.getPost
+  postController.getAuthorPost
 );
 
 authorPostsRouter.put(

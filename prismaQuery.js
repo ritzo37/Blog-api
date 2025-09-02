@@ -71,6 +71,9 @@ async function getPosts() {
     include: {
       author: true,
     },
+    where: {
+      published: true,
+    },
   });
   return data;
 }
@@ -83,7 +86,7 @@ async function deletePost(postId) {
   });
 }
 
-async function getPost(postId) {
+async function getAuthorPost(postId) {
   const data = await prisma.post.findUnique({
     where: {
       postId: postId,
@@ -202,11 +205,48 @@ async function getDownvotes(cid) {
 }
 
 async function getUserWithUserId(userId) {
-  return await prisma.users.findUnique({
+  return await prisma.user.findUnique({
     where: {
       id: userId,
     },
   });
+}
+
+async function togglePublish(postId) {
+  const currStateOfPost = await prisma.post.findUnique({
+    where: {
+      postId,
+    },
+  });
+  const publishedStatus = currStateOfPost.published;
+  await prisma.post.update({
+    where: {
+      postId: postId,
+    },
+    data: {
+      published: !publishedStatus,
+    },
+  });
+}
+
+async function getPost(postId) {
+  const data = await prisma.post.findUnique({
+    where: {
+      postId: postId,
+      published: true,
+    },
+    include: {
+      author: true,
+      comments: {
+        include: {
+          downvotes: true,
+          upvotes: true,
+          replies: true,
+        },
+      },
+    },
+  });
+  return data;
 }
 module.exports = {
   addUser,
@@ -216,7 +256,7 @@ module.exports = {
   deleteComment,
   getPosts,
   deletePost,
-  getPost,
+  getAuthorPost,
   updatePost,
   upvoteComment,
   downvoteComment,
@@ -230,4 +270,6 @@ module.exports = {
   getUpvotes,
   getDownvotes,
   getUserWithUserId,
+  togglePublish,
+  getPost,
 };

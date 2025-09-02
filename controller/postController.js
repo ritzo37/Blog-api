@@ -40,13 +40,24 @@ async function deletePost(req, res) {
     });
   }
 }
-
+async function getAuthorPost(req, res) {
+  const postId = parseInt(req.params.postId);
+  try {
+    const data = await db.getAuthorPost(postId);
+    res.json(data);
+  } catch {
+    res
+      .status(500)
+      .json({ message: "Something bad happened please try agian!" });
+  }
+}
 async function getPost(req, res) {
   const postId = parseInt(req.params.postId);
   try {
     const data = await db.getPost(postId);
     res.json(data);
-  } catch {
+  } catch (err) {
+    console.log(err);
     res
       .status(500)
       .json({ message: "Something bad happened please try agian!" });
@@ -80,6 +91,18 @@ async function getAuthorPosts(req, res) {
   }
 }
 
+async function publishHandler(req, res) {
+  const postId = parseInt(req.params.postId);
+  try {
+    await db.togglePublish(postId);
+    res.status(200).json({ message: "Toggled Sucessfully!" });
+  } catch {
+    res.status(500).json({
+      message: "Something bad happened please try agian!",
+    });
+  }
+}
+
 module.exports = {
   addPost,
   getPosts,
@@ -87,4 +110,6 @@ module.exports = {
   getPost,
   updatePost,
   getAuthorPosts,
+  publishHandler,
+  getAuthorPost,
 };
